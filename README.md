@@ -1,7 +1,7 @@
 # Easy UI Tool for DDSM Driver Hat (A)
 
 This is a tool for both DDSM210 and DDSM115's driver hat.
-UI is easy enough to simply launch to play, just remember to install `pyserial`. 
+UI is easy enough to simply launch and use, just remember to install `pyserial`. 
 
 ## Usage
 
