@@ -110,6 +110,18 @@ class DDSMControlApp:
             )
             btn.pack(side="left", padx=5)
 
+        # 四馬達同時 80 RPM
+        all_run_frame = ttk.Frame(motion_frame)
+        all_run_frame.pack(pady=5)
+        ttk.Label(all_run_frame, text="群控 (All):", foreground="green", width=12).pack(side="left", padx=5)
+        btn_all_80 = ttk.Button(
+            all_run_frame,
+            text="Run 1-4 @80",
+            width=15,
+            command=self.run_all_80rpm
+        )
+        btn_all_80.pack(side="left", padx=5)
+
         # 停止按鈕列
         stop_frame = ttk.Frame(motion_frame)
         stop_frame.pack(pady=5)
@@ -214,6 +226,7 @@ class DDSMControlApp:
             cmd_bytes = (json_str + '\n').encode('utf-8')
             self.ser.write(cmd_bytes)
             self.log_message(f"[TX] {json_str}")
+            time.sleep(0.01)  # 小延遲確保傳送完成
         except serial.SerialException:
             self.disconnect_serial()
             messagebox.showerror("錯誤", "發送失敗 (裝置斷開)")
@@ -240,6 +253,12 @@ class DDSMControlApp:
             self.send_json(cmd)
         except ValueError:
             messagebox.showerror("錯誤", "速度必須是數字")
+
+    def run_all_80rpm(self):
+        """同時讓 1~4 號馬達以 80 RPM 運轉"""
+        for target_id in range(1, 5):
+            cmd = {"T": 10010, "id": int(target_id), "cmd": 100, "act": 0}
+            self.send_json(cmd)
 
     def stop_motor(self, target_id):
         """停止指定 ID"""
